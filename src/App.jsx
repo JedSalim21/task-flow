@@ -1,22 +1,51 @@
 import InputArea from "./InputArea";
 import ToDoItem from "./ToDoItem";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "./supabase/client";
+import Footer from "./Footer";
 
 const App = () => {
   const [items, setItems] = useState([]);
 
-  function addItem(newItem) {
-    setItems((prev) => {
-      return [...prev, newItem];
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  async function addItem(newItem) {
+    const { error } = await supabase.from("items").insert({
+      task: newItem,
     });
+
+    if (error) {
+      console.error(error);
+    } else {
+      fetchItems();
+    }
   }
 
-  function deleteItem(id) {
-    setItems((prev) => {
-      return prev.filter((item, index) => {
-        return index !== id;
-      });
-    });
+  async function fetchItems() {
+    const { data, error } = await supabase.from("items").select("*");
+
+    if (error) {
+      console.error(error);
+    } else {
+      setItems(data);
+    }
+  }
+
+  async function deleteItem(id) {
+    const cleanId = Number(id);
+
+    console.log("DELETE ID CLEAN:", cleanId);
+    console.log(items);
+
+    const { error } = await supabase.from("items").delete().eq("id", cleanId);
+
+    if (error) {
+      console.error(error);
+    } else {
+      fetchItems();
+    }
   }
 
   return (
@@ -29,15 +58,16 @@ const App = () => {
         <InputArea onAdd={addItem} />
 
         <ul className="mt-6 space-y-3">
-          {items.map((item, index) => (
+          {items.map((item) => (
             <ToDoItem
-              key={index}
-              id={index}
-              text={item}
+              key={item.id}
+              id={item.id}
+              text={item.task}
               onChecked={deleteItem}
             />
           ))}
         </ul>
+        <Footer />
       </div>
     </div>
   );

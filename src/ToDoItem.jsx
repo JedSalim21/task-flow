@@ -10,21 +10,21 @@ const ToDoItem = ({ text, onChecked, id }) => {
     <li className="flex items-center justify-center bg-slate-800 p-3 rounded-lg text-white ">
       <button
         onClick={() => setIsDone((prev) => !prev)}
-        className="flex items-center justify-items-start hover:text-green-500"
+        className="flex items-center justify-between hover:text-green-500 cursor-pointer"
       >
         {isDone ?
           <CheckBoxIcon />
         : <CheckBoxOutlineBlankIcon />}
       </button>
       <span
-        className={`transition-all ${isDone ? "line-through opacity-50" : ""} flex flex-1 justify-center items-center`}
+        className={`transition-all flex-1 text-center ${isDone ? "line-through opacity-50" : ""} `}
       >
         {text}
       </span>
 
       <button
         onClick={() => onChecked(id)}
-        className="flex items-center justify-items-end hover:text-rose-500 transition-colors duration-300"
+        className="hover:text-rose-500 transition-colors duration-300 cursor-pointer"
       >
         <DeleteIcon />
       </button>
