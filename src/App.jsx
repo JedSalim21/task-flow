@@ -34,12 +34,7 @@ const App = () => {
   }
 
   async function deleteItem(id) {
-    const cleanId = Number(id);
-
-    console.log("DELETE ID CLEAN:", cleanId);
-    console.log(items);
-
-    const { error } = await supabase.from("items").delete().eq("id", cleanId);
+    const { error } = await supabase.from("items").delete().eq("id", id);
 
     if (error) {
       console.error(error);
